@@ -1,20 +1,17 @@
 const display = document.querySelector(".display");
 const buttons = document.querySelectorAll("button");
-const specialChars = ["%", "*", "/", "-", "+", "="];
+const specialChars = ["*", "/", "-", "+", "=", "%"];
 let output = "";
 
 // Function to calculate the result based on the current expression
 const calculate = (btnValue) => {
     if (btnValue === "=" && output !== "") {
         output = parseExpression(output);
-    }
-    else if (btnValue === "AC") {
+    } else if (btnValue === "AC") {
         output = "";
-    }
-    else if (btnValue === "DEL") {
+    } else if (btnValue === "DEL") {
         output = output.toString().slice(0, -1);
-    }
-    else {
+    } else {
         if (output === "" && specialChars.includes(btnValue) && btnValue !== "-") return;
 
         // Handle negative numbers (allow "-" at the start or after an operator)
@@ -40,7 +37,9 @@ const calculate = (btnValue) => {
 
 // Function to parse and evaluate the expression
 const parseExpression = (expression) => {
-    // Match numbers (including negative ones) and operators
+    // Handle percentage calculation (e.g., 5% = 5/100 = 0.05)
+    expression = expression.replace(/(\d+)%/g, (match, number) => parseFloat(number) / 100);
+
     const tokens = expression.match(/-?\d+(\.\d+)?|[-+*/%]/g);
     if (!tokens) return "";
 
@@ -69,25 +68,19 @@ buttons.forEach(button => {
 
 // Event listener for keyboard input
 document.addEventListener("keydown", (e) => {
-    if (e.key >= 0 && e.key <= 9) {
+    if (e.key >= 0 && e.key <= 9) {  // Handle digit input
         calculate(e.key);
-    }
-    else if (specialChars.includes(e.key)) {
+    } else if (specialChars.includes(e.key)) {  // Handle operator input
         calculate(e.key);
-    }
-    else if (e.key === "Enter" || e.key === "=") {
+    } else if (e.key === "Enter" || e.key === "=") {  // Handle equal sign
         calculate("=");
-    }
-    else if (e.key === "Backspace") {
+    } else if (e.key === "Backspace") {  // Handle backspace/delete
         calculate("DEL");
-    }
-    else if (e.key === "Escape") {
+    } else if (e.key === "Escape") {  // Handle clear (ESC key)
         calculate("AC");
-    }
-    else if (e.key === ".") {
+    } else if (e.key === ".") {  // Handle decimal point
         calculate(".");
-    }
-    else if (e.key === "-") {
+    } else if (e.key === "-") {  // Handle negative sign
         calculate("-");
     }
 });
