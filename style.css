@@ -19,18 +19,21 @@ body {
     position: relative;
     max-width: 300px;
     width: 100%;
-    padding: 20px;
+    padding: 15px;
     background: #fff;
     border-radius: 12px;
     box-shadow: 0 5px 10px rgb(0, 0, 0, 0.05);
+    background-color: #30D5C8;
 }
 
 .display {
+    font-weight: 500;
     height: 80px;
     width: 100%;
     margin-bottom: 10px;
     font-size: 25px;
     border: none;
+    border-radius: 6px;
     text-align: right;
     color: #000e1a;
 }
@@ -42,6 +45,7 @@ body {
 }
 
 .buttons button {
+    font-weight: 500;
     padding: 12px 10px;
     border-radius: 6px;
     border: none;
