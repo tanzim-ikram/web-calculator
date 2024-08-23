@@ -7,13 +7,26 @@ let output = "";
 const calculate = (btnValue) => {
     if (btnValue === "=" && output !== "") {
         output = parseExpression(output);
-    } else if (btnValue === "AC") {
+    }
+    else if (btnValue === "AC") {
         output = "";
-    } else if (btnValue === "DEL") {
+    }
+    else if (btnValue === "DEL") {
         output = output.toString().slice(0, -1);
-    } else {
-        if (output === "" && specialChars.includes(btnValue)) return;
-        
+    }
+    else {
+        if (output === "" && specialChars.includes(btnValue) && btnValue !== "-") return;
+
+        // Handle negative numbers (allow "-" at the start or after an operator)
+        if (btnValue === "-") {
+            const lastChar = output.slice(-1);
+            if (output === "" || specialChars.includes(lastChar)) {
+                output += btnValue;
+                display.value = output;
+                return;
+            }
+        }
+
         // Prevent adding more than one decimal point to a number
         if (btnValue === "." && output.includes(".")) {
             const lastNumber = output.split(/[*\/\+\-%]/).pop();
@@ -27,7 +40,10 @@ const calculate = (btnValue) => {
 
 // Function to parse and evaluate the expression
 const parseExpression = (expression) => {
-    const tokens = expression.split(/([*\/\+\-%])/).map(token => token.trim());
+    // Match numbers (including negative ones) and operators
+    const tokens = expression.match(/-?\d+(\.\d+)?|[-+*/%]/g);
+    if (!tokens) return "";
+
     let result = parseFloat(tokens[0]);
 
     for (let i = 1; i < tokens.length; i += 2) {
@@ -55,15 +71,23 @@ buttons.forEach(button => {
 document.addEventListener("keydown", (e) => {
     if (e.key >= 0 && e.key <= 9) {
         calculate(e.key);
-    } else if (specialChars.includes(e.key)) {
+    }
+    else if (specialChars.includes(e.key)) {
         calculate(e.key);
-    } else if (e.key === "Enter" || e.key === "=") {
+    }
+    else if (e.key === "Enter" || e.key === "=") {
         calculate("=");
-    } else if (e.key === "Backspace") {
+    }
+    else if (e.key === "Backspace") {
         calculate("DEL");
-    } else if (e.key === "Escape") {
+    }
+    else if (e.key === "Escape") {
         calculate("AC");
-    } else if (e.key === ".") {
+    }
+    else if (e.key === ".") {
         calculate(".");
+    }
+    else if (e.key === "-") {
+        calculate("-");
     }
 });
